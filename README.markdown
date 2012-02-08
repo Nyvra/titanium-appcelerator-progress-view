@@ -41,5 +41,5 @@ setTimeout(function() {
 	progressView.hide();
 }, 4000);</pre>
 <h1>Credits</h1>
-<p>This project was based in the SVProgressHUD from <a href="http://twitter.com/samvermette" target="_blank">@samvermette.</a></p>
+<p>This project was based in the <a href="https://github.com/samvermette/SVProgressHUD" target="_blank">SVProgressHUD</a> from <a href="http://twitter.com/samvermette" target="_blank">@samvermette.</a></p>
 <p>The images was made by <a href="http://twitter.com/glyphish" target="_blank">@glyphish</a></p>
