@@ -1,6 +1,8 @@
-var ProgressView = function() 
+var ProgressView = function(dictionary) 
 {
     var isAndroid = (Ti.Platform.osname != "android") ? false : true;
+
+	var _window  = (dictionary) ? ((dictionary.window) ? dictionary.window : Ti.UI.currentWindow) : Ti.UI.currentWindow;
     
     var _activityIndicator;
     var _viewFullBackgroundActivityIndicator;
@@ -111,7 +113,7 @@ var ProgressView = function()
                 duration:300
             });
         
-            Ti.UI.currentWindow.add(_viewFullBackgroundActivityIndicator);
+            _window.add(_viewFullBackgroundActivityIndicator);
         } 
         else {
             if (dictionary) 
@@ -123,7 +125,7 @@ var ProgressView = function()
                 }
             }
             
-            Ti.UI.currentWindow.add(_activityIndicator);
+            _window.add(_activityIndicator);
         }
     }
 
@@ -157,7 +159,7 @@ var ProgressView = function()
             }, 300);
         }
         else {
-            Ti.UI.currentWindow.remove(_activityIndicator);
+            _window.remove(_activityIndicator);
         }
     }
     
