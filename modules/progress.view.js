@@ -142,7 +142,7 @@ var ProgressView = function(dictionary)
         
             setTimeout(function() {
                 
-                Ti.UI.currentWindow.remove(_viewFullBackgroundActivityIndicator);
+                _window.remove(_viewFullBackgroundActivityIndicator);
                 
                 if (_hasText == 1) {
                     _viewBackgroundActivityIndicator.width = _viewBackgroundBackActivityIndicator.width = 100;
