@@ -16,6 +16,17 @@ progressView.show({
 setTimeout(function() {
 	progressView.hide();
 }, 2000);</pre>
+<h2>Window</h2>
+<p>If you are using an external window (url:...) you have not to set the window. The API will take the currentWindow to add the ProgressView. But, if you aren't using an external window you have to set the window when you instance a new ProgressView, like this example:</p>
+<pre>Ti.include("modules/progress.view.js");
+
+var win = Ti.UI.createWindow({
+	title: "Progress View"
+});
+
+var progressView = new ProgressView({
+	window: win
+});</pre>
 <h2>Text Label</h2>
 <p>You can set a text to your progress view. The view will resize if needed. If you wanna change the text, you have just to use the method <b>setTextLabel</b> with the text.</p>
 <h2>Change properties</h2>
