@@ -232,3 +232,7 @@ var ProgressView = function(dictionary)
         _labelActivityIndicator.text = (dictionary.text) ? dictionary.text : dictionary.textId;
     }
 }
+
+exports = exports || {};
+
+exports.ProgressView = ProgressView;
