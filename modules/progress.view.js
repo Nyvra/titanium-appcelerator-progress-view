@@ -10,72 +10,98 @@ var ProgressView = function(dictionary)
     var _viewBackgroundActivityIndicator;
     var _labelActivityIndicator;
     var _imageViewStatus;
+    var _viewActivityIndicator;
     
     var _hasText;
     var _hasImage;
 
     (function()
     {
-        
-        _viewFullBackgroundActivityIndicator = Ti.UI.createView({
-            backgroundColor:"transparent",
-            top:0,
-            left:0,
-            width:"100%",
-            height:"100%"
-        });
-        
-        _viewBackgroundBackActivityIndicator = Ti.UI.createView({
-            backgroundColor:"transparent",
-            opacity:1.0,
-            width:100,
-            height:100
-        });
-        _viewFullBackgroundActivityIndicator.add(_viewBackgroundBackActivityIndicator);
-        
-        _viewBackgroundActivityIndicator = Ti.UI.createView({
-            backgroundColor:"#000",
-            borderRadius:8,
-            opacity:0.9,
-            width:100,
-            height:100
-        });
-        _viewBackgroundBackActivityIndicator.add(_viewBackgroundActivityIndicator);
-        
-        _viewActivityIndicator = Ti.UI.createView({
-            backgroundColor:"transparent",
-            opacity:1.0,
-            width:"100%",
-            top:0,
-            left:0,
-            right:0,
-            bottom:0
-        });
-        _viewBackgroundBackActivityIndicator.add(_viewActivityIndicator);
-        
-        _imageViewStatus = Ti.UI.createImageView({
-            width:28,
-            height:28
-        })
-        
-        _activityIndicator = Ti.UI.createActivityIndicator({
-            style:Titanium.UI.iPhone.ActivityIndicatorStyle.BIG
-        });
-        _viewActivityIndicator.add(_activityIndicator);
-        
-        _labelActivityIndicator = Ti.UI.createLabel({
-            color:"#FFF",
-            font:{fontSize:14, fontWeight:"bold"},
-            textAlign:"center",
-            left:10,
-            right:10,
-            bottom:10,
-            height:16
-        });
-        
+        if (!isAndroid) {
+	        _viewFullBackgroundActivityIndicator = Ti.UI.createView({
+	            backgroundColor:"transparent",
+	            top:0,
+	            left:0,
+	            width:"100%",
+	            height:"100%"
+	        });
+	        
+	        _viewBackgroundBackActivityIndicator = Ti.UI.createView({
+	            backgroundColor:"transparent",
+	            opacity:1.0,
+	            width:100,
+	            height:100
+	        });
+	        _viewFullBackgroundActivityIndicator.add(_viewBackgroundBackActivityIndicator);
+	        
+	        _viewBackgroundActivityIndicator = Ti.UI.createView({
+	            backgroundColor:"#000",
+	            borderRadius:8,
+	            opacity:0.9,
+	            width:100,
+	            height:100
+	        });
+	        _viewBackgroundBackActivityIndicator.add(_viewBackgroundActivityIndicator);
+	        
+	        _viewActivityIndicator = Ti.UI.createView({
+	            backgroundColor:"transparent",
+	            opacity:1.0,
+	            width:"100%",
+	            top:0,
+	            left:0,
+	            right:0,
+	            bottom:0
+	        });
+	        _viewBackgroundBackActivityIndicator.add(_viewActivityIndicator);
+	        
+	        _imageViewStatus = Ti.UI.createImageView({
+	            width:28,
+	            height:28
+	        });
+	        
+	        _activityIndicator = Ti.UI.createActivityIndicator({
+	            style:Titanium.UI.iPhone.ActivityIndicatorStyle.BIG
+	        });
+	        _viewActivityIndicator.add(_activityIndicator);
+	        
+	        _labelActivityIndicator = Ti.UI.createLabel({
+	            color:"#FFF",
+	            font:{fontSize:14, fontWeight:"bold"},
+	            textAlign:"center",
+	            left:10,
+	            right:10,
+	            bottom:10,
+	            height:16
+	        });
+        } else {
+			_activityIndicator = Ti.UI.createActivityIndicator();
+		}
         _activityIndicator.show();
         
     })();
+    
+    var setTextLabel = function(dictionary) 
+    {
+        var _width = Ti.UI.createLabel({
+            text:(dictionary.text) ? dictionary.text : dictionary.textId,
+            font:{fontSize:14, fontWeight:"bold"},
+            width:"auto"
+        }).toImage().width + 20;
+        
+        if (_width > 100 && _width < 310) {
+            
+            if (_hasText == 1) {
+                _viewBackgroundBackActivityIndicator.animate({width: _width, duration:200});
+                _viewBackgroundActivityIndicator.animate({width: _width, duration:200});
+            }
+            else {
+                _viewBackgroundBackActivityIndicator.width = _viewBackgroundActivityIndicator.width = _width;
+            }
+            
+        }
+        
+        _labelActivityIndicator.text = (dictionary.text) ? dictionary.text : dictionary.textId;
+    };
     
     this.show = function(dictionary)
     {
@@ -96,10 +122,10 @@ var ProgressView = function(dictionary)
                     
                 }
                 
-                if (dictionary.success == true || dictionary.error == true) 
+                if (dictionary.success === true || dictionary.error === true) 
                 {
                     _hasImage = 1;
-                    _imageViewStatus.image = "/modules/" + ((dictionary.success == true) ? "success" : "error") + ".png";
+                    _imageViewStatus.image = "/modules/" + (dictionary.success ? "success" : "error") + ".png";
                     _viewActivityIndicator.remove(_activityIndicator);
                     _viewActivityIndicator.add(_imageViewStatus);
                 }
@@ -127,20 +153,13 @@ var ProgressView = function(dictionary)
             
             _window.add(_activityIndicator);
         }
-    }
+    };
 
-    this.hide = function()
+    this.hide = function(opt_now)
     {
         if (!isAndroid)
         {
-            _viewFullBackgroundActivityIndicator.opacity = 1.0;
-        
-            _viewFullBackgroundActivityIndicator.animate({
-                opacity:0.0,
-                duration:300
-            });
-        
-            setTimeout(function() {
+            var hideFunc = function() {
                 
                 _window.remove(_viewFullBackgroundActivityIndicator);
                 
@@ -156,12 +175,23 @@ var ProgressView = function(dictionary)
                     _viewActivityIndicator.add(_activityIndicator);
                 }
                 
-            }, 300);
+            };
+            if (opt_now) {
+                hideFunc();
+            } else {
+                _viewFullBackgroundActivityIndicator.opacity = 1.0;
+        
+                _viewFullBackgroundActivityIndicator.animate({
+                    opacity:0.0,
+                    duration:300
+                });
+                setTimeout(hideFunc, 300);
+            }
         }
         else {
-            _window.remove(_activityIndicator);
+            _activityIndicator.hide();
         }
-    }
+    };
     
     this.change = function(dictionary)
     {
@@ -187,14 +217,14 @@ var ProgressView = function(dictionary)
                     }
                 }
                 
-                if (dictionary.success == true || dictionary.error == true) 
+                if (dictionary.success === true || dictionary.error === true) 
                 {
                     if (_hasImage == 1) {
-                        _imageViewStatus.image = "/modules/" + ((dictionary.success == true) ? "success" : "error") + ".png";
+                        _imageViewStatus.image = "/modules/" + (dictionary.success ? "success" : "error") + ".png";
                     }
                     else {
                         _hasImage = 1;
-                        _imageViewStatus.image = "/modules/" + ((dictionary.success == true) ? "success" : "error") + ".png";
+                        _imageViewStatus.image = "/modules/" + (dictionary.success ? "success" : "error") + ".png";
                         _viewActivityIndicator.remove(_activityIndicator);
                         _viewActivityIndicator.add(_imageViewStatus);
                     }
@@ -207,31 +237,8 @@ var ProgressView = function(dictionary)
                 }
             }
         }
-    }
-    
-    var setTextLabel = function(dictionary) 
-    {
-        var _width = Ti.UI.createLabel({
-            text:(dictionary.text) ? dictionary.text : dictionary.textId,
-            font:{fontSize:14, fontWeight:"bold"},
-            width:"auto"
-        }).toImage().width + 20;
-        
-        if (_width > 100 && _width < 310) {
-            
-            if (_hasText == 1) {
-                _viewBackgroundBackActivityIndicator.animate({width: _width, duration:200});
-                _viewBackgroundActivityIndicator.animate({width: _width, duration:200});
-            }
-            else {
-                _viewBackgroundBackActivityIndicator.width = _viewBackgroundActivityIndicator.width = _width;
-            }
-            
-        }
-        
-        _labelActivityIndicator.text = (dictionary.text) ? dictionary.text : dictionary.textId;
-    }
-}
+    };
+};
 
 exports = exports || {};
 
